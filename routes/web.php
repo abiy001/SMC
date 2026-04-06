@@ -3,6 +3,7 @@
 // use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\WakaController;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/dashboard', function () {
@@ -105,8 +106,7 @@ Route::get('/videos', function () {
 
 
 
-
-
+require __DIR__.'/waka.php';
 
 
 
