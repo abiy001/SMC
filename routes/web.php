@@ -17,11 +17,10 @@ use Illuminate\Support\Facades\Route;
 
 // require __DIR__.'/auth.php';
 
+require __DIR__.'/admin.php';
 
-// dashboard pages
-Route::get('/', function () {
-    return view('pages.dashboard.ecommerce', ['title' => 'E-commerce Dashboard']);
-})->name('dashboard');
+
+
 
 // calender pages
 Route::get('/calendar', function () {
