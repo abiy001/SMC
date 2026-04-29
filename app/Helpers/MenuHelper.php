@@ -91,6 +91,10 @@ class MenuHelper
                 'items' => self::getMainNavItems()
             ],
             [
+                'title' => 'Admin',
+                'items' => AdminMenuHelper::menu()
+            ],
+            [
                 'title' => 'Others',
                 'items' => self::getOthersItems()
             ]

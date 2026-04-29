@@ -883,4 +883,13 @@ pre[class*='language-'] {
   .flatpickr-calendar.static {
     margin-right: -60px !important;
   }
+
+  /* Safe area untuk iPhone notch/home indicator */
+.pb-safe {
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+
+.safe-area-pb {
+    padding-bottom: env(safe-area-inset-bottom);
+}
 }
