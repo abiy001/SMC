@@ -6,5 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class RoomClass extends Model
 {
-    //
+    protected $table = 'classes';
+ 
+    protected $fillable = [
+        'school_id',
+        'name',
+    ];
 }

@@ -99,8 +99,8 @@ class MenuHelper
                 'items' => self::getMainNavItems()
             ],
             [
-                'title' => 'Waka',
-                'items' => WakaHelper::items()
+                'title' => 'Admin',
+                'items' => AdminMenuHelper::menu()
             ],
             [
                 'title' => 'Others',

@@ -7,59 +7,55 @@ use Illuminate\Http\Request;
 
 class SubjectController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $subjects = Subject::paginate(10);
+        return view('admin.pages.subject.index', compact('subjects'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('admin.pages.subject.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:subjects,name',
+        ]);
+
+        Subject::create($validated);
+
+        return redirect()->route('admin.subjects.index')
+                         ->with('success', 'Pelajaran berhasil ditambahkan!');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Subject $subject)
+    public function edit(string $id)
     {
-        //
+        $subject = Subject::findOrFail($id);
+        return view('admin.pages.subject.edit', compact('subject'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Subject $subject)
+    public function update(Request $request, string $id)
     {
-        //
+        $subject = Subject::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:subjects,name,' . $id,
+        ]);
+
+        $subject->update($validated);
+
+        return redirect()->route('admin.subjects.index')
+                         ->with('success', 'Pelajaran berhasil diupdate!');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Subject $subject)
+    public function destroy(string $id)
     {
-        //
-    }
+        $subject = Subject::findOrFail($id);
+        $subject->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Subject $subject)
-    {
-        //
+        return redirect()->route('admin.subjects.index')
+                         ->with('success', 'Pelajaran berhasil dihapus!');
     }
 }

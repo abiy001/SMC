@@ -1,4 +1,4 @@
-<a href="#"
+<a href="{{ route('admin.classes.index') }}"
     class="rounded-3xl border border-gray-200 bg-white p-5 text-center transition hover:border-gray-300 hover:bg-gray-50 dark:border-gray-800 dark:bg-white/3 dark:hover:bg-gray-950/60">
     <div
         class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-100 text-blue-600 dark:bg-blue-900/10 dark:text-blue-300">
@@ -10,7 +10,7 @@
     <p class="mt-4 text-sm font-semibold text-gray-900 dark:text-white/90">Tambah User</p>
 </a>
 
-<a href="#"
+<a href="{{ route('admin.classes.index') }}"
     class="rounded-3xl border border-gray-200 bg-white p-5 text-center transition hover:border-gray-300 hover:bg-gray-50 dark:border-gray-800 dark:bg-white/3 dark:hover:bg-gray-950/60">
     <div
         class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-100 text-orange-600 dark:bg-orange-900/10 dark:text-orange-300">
@@ -22,7 +22,7 @@
     <p class="mt-4 text-sm font-semibold text-gray-900 dark:text-white/90">Atur Kelas</p>
 </a>
 
-<a href="#"
+<a href="{{ route('admin.schedule.index') }}"
     class="rounded-3xl border border-gray-200 bg-white p-5 text-center transition hover:border-gray-300 hover:bg-gray-50 dark:border-gray-800 dark:bg-white/3 dark:hover:bg-gray-950/60">
     <div
         class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-100 text-violet-600 dark:bg-violet-900/10 dark:text-violet-300">
@@ -36,7 +36,7 @@
     <p class="mt-4 text-sm font-semibold text-gray-900 dark:text-white/90">Atur Jadwal</p>
 </a>
 
-<a href="#"
+<a href="{{ route('admin.report.index') }}"
     class="rounded-3xl border border-gray-200 bg-white p-5 text-center transition hover:border-gray-300 hover:bg-gray-50 dark:border-gray-800 dark:bg-white/3 dark:hover:bg-gray-950/60">
     <div
         class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600 dark:bg-emerald-900/10 dark:text-emerald-300">

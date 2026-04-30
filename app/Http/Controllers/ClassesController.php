@@ -1,4 +1,5 @@
 <?php
+// app/Http/Controllers/ClassesController.php
 
 namespace App\Http\Controllers;
 
@@ -7,59 +8,65 @@ use Illuminate\Http\Request;
 
 class ClassesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $classes = Classes::orderBy('level')->orderBy('grade')->orderBy('name')->get();
+        
+        // Group by level
+        $grouped = $classes->groupBy('level');
+        
+        return view('admin.pages.users.classes.index', compact('classes', 'grouped'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('admin.pages.users.classes.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name'     => 'required|string|max:255|unique:classes,name',
+            'level'    => 'required|in:SD,SMP,SMA',
+            'grade'    => 'nullable|string|max:20',
+            'capacity' => 'required|integer|min:1|max:100',
+        ]);
+
+        Classes::create($validated);
+
+        return redirect()->route('admin.classes.index')
+                         ->with('success', 'Kelas berhasil ditambahkan!');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Classes $classes)
+    public function edit(string $id)
     {
-        //
+        $class = Classes::findOrFail($id);
+        return view('admin.pages.users.classes.edit', compact('class'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Classes $classes)
+    public function update(Request $request, string $id)
     {
-        //
+        $class = Classes::findOrFail($id);
+
+        $validated = $request->validate([
+            'name'     => 'required|string|max:255|unique:classes,name,' . $id,
+            'level'    => 'required|in:SD,SMP,SMA',
+            'grade'    => 'nullable|string|max:20',
+            'capacity' => 'required|integer|min:1|max:100',
+        ]);
+
+        $class->update($validated);
+
+        return redirect()->route('admin.classes.index')
+                         ->with('success', 'Kelas berhasil diupdate!');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Classes $classes)
+    public function destroy(string $id)
     {
-        //
-    }
+        $class = Classes::findOrFail($id);
+        $class->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Classes $classes)
-    {
-        //
+        return redirect()->route('admin.classes.index')
+                         ->with('success', 'Kelas berhasil dihapus!');
     }
 }

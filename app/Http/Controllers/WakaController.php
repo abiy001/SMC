@@ -2,85 +2,111 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Teacher;
-use App\Models\Waka;
+use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use App\Imports\WakaImport;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Hash;
 
 class WakaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-
-public function index(Request $request)
-{
-    $guru = $request->guru;
-
-    if ($guru) {
-        // MODE DETAIL
-        return view('waka.pages.rekap', [
-            'mode' => 'detail',
-            'guru' => $guru,
-            'data' => [], // isi sesuai kebutuhan
-            'aktivitas' => [],
-            'total' => 3,
-            'disiplin' => 83,
-            'kelas' => 1,
-        ]);
+    // GET /admin/waka
+    public function index()
+    {
+        $wakas = User::where('role', 'waka')->paginate(10);
+        return view('admin.pages.users.waka.index', compact('wakas'));
     }
 
-    // MODE FEED (default)
-    return view('waka.pages.rekap', [
-        'mode' => 'feed',
-        'data' => [] // isi data feed
-    ]);
+
+    public function show(string $id)
+{
+    $waka = User::where('role', 'waka')->findOrFail($id);
+    return view('admin.pages.users.waka.show', compact('waka'));
 }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    // GET /admin/waka/create
     public function create()
     {
-        //
+        return view('admin.pages.users.waka.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // POST /admin/waka
     public function store(Request $request)
     {
-        //
+      $validated = $request->validate([
+        'name'         => 'required|string|max:255',
+        'email'        => 'required|email|unique:users,email',
+        'number_phone' => 'nullable|string|max:20',
+        'password'     => 'nullable|string|min:6',  // ← aturan validasi, bukan Hash
+      ]);
+
+      User::create([
+        'name'         => $validated['name'],
+        'email'        => $validated['email'],
+        'number_phone' => $validated['number_phone'] ?? null,
+        'role'         => 'waka',
+        'password'     => Hash::make($validated['password'] ?? 'password123'), // ← Hash di sini
+      ]);
+
+      return redirect()->route('admin.waka.index')
+                     ->with('success', 'Waka berhasil ditambahkan!');
+    }
+    // GET /admin/waka/{id}/edit
+    public function edit(string $id)
+    {
+        $waka = User::where('role', 'waka')->findOrFail($id);
+        return view('admin.pages.users.waka.edit', compact('waka'));
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Waka $waka)
+    // PUT /admin/waka/{id}
+    public function update(Request $request, string $id)
     {
-        //
+        $waka = User::where('role', 'waka')->findOrFail($id);
+
+        $validated = $request->validate([
+            'name'         => 'required|string|max:255',
+            'email'        => ['required', 'email', Rule::unique('users')->ignore($waka->id)],
+            'number_phone' => 'nullable|string|max:20',
+        ]);
+
+        $waka->update($validated);
+
+        return redirect()->route('admin.waka.index')
+                         ->with('success', 'Waka berhasil diupdate!');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Waka $waka)
+    // DELETE /admin/waka/{id}
+    public function destroy(string $id)
     {
-        //
-    }
+        $waka = User::where('role', 'waka')->findOrFail($id);
+        $waka->delete();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Waka $waka)
-    {
-        //
+        return redirect()->route('admin.waka.index')
+                         ->with('success', 'Waka berhasil dihapus!');
     }
+  
+    public function import(Request $request)
+    {
+      $request->validate(['file' => 'required|mimes:xlsx,xls']);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Waka $waka)
-    {
-        //
-    }
+      try {
+        $import = new WakaImport();
+        Excel::import($import, $request->file('file'));
+
+        // Cek validation failures
+        if ($import->failures()->isNotEmpty()) {
+            $errors = collect($import->failures())->map(fn($f) =>
+                "Baris {$f->row()}: " . implode(', ', $f->errors())
+            )->join('<br>');
+
+            return back()->with('error', $errors);
+        }
+
+       return back()->with('success', 'Data waka berhasil diimport.');
+      } catch (\Exception $e) {
+       return back()->with('error', 'Gagal import: ' . $e->getMessage());
+    `}
+  }
 }
