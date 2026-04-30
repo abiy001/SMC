@@ -33,27 +33,26 @@ class WakaController extends Controller
     }
 
     // POST /admin/waka
-// POST /admin/waka
-public function store(Request $request)
-{
-    $validated = $request->validate([
+    public function store(Request $request)
+    {
+      $validated = $request->validate([
         'name'         => 'required|string|max:255',
         'email'        => 'required|email|unique:users,email',
         'number_phone' => 'nullable|string|max:20',
         'password'     => 'nullable|string|min:6',  // ← aturan validasi, bukan Hash
-    ]);
+      ]);
 
-    User::create([
+      User::create([
         'name'         => $validated['name'],
         'email'        => $validated['email'],
         'number_phone' => $validated['number_phone'] ?? null,
         'role'         => 'waka',
         'password'     => Hash::make($validated['password'] ?? 'password123'), // ← Hash di sini
-    ]);
+      ]);
 
-    return redirect()->route('admin.waka.index')
+      return redirect()->route('admin.waka.index')
                      ->with('success', 'Waka berhasil ditambahkan!');
-}
+    }
     // GET /admin/waka/{id}/edit
     public function edit(string $id)
     {
@@ -87,11 +86,12 @@ public function store(Request $request)
         return redirect()->route('admin.waka.index')
                          ->with('success', 'Waka berhasil dihapus!');
     }
-public function import(Request $request)
-{
-    $request->validate(['file' => 'required|mimes:xlsx,xls']);
+  
+    public function import(Request $request)
+    {
+      $request->validate(['file' => 'required|mimes:xlsx,xls']);
 
-    try {
+      try {
         $import = new WakaImport();
         Excel::import($import, $request->file('file'));
 
@@ -104,10 +104,9 @@ public function import(Request $request)
             return back()->with('error', $errors);
         }
 
-        return back()->with('success', 'Data waka berhasil diimport.');
-
-    } catch (\Exception $e) {
-        return back()->with('error', 'Gagal import: ' . $e->getMessage());
-    }
-}
+       return back()->with('success', 'Data waka berhasil diimport.');
+      } catch (\Exception $e) {
+       return back()->with('error', 'Gagal import: ' . $e->getMessage());
+    `}
+  }
 }

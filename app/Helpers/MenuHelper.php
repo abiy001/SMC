@@ -85,6 +85,14 @@ class MenuHelper
 
     public static function getMenuGroups()
     {
+    //     if (auth()->check() && auth()->user()->role === 'waka') {
+    //     return [
+    //         [
+    //             'title' => 'Waka',
+    //             'items' => \App\Helpers\WakaMenu::items()
+    //         ]
+    //     ];
+    // }
         return [
             [
                 'title' => 'Menu',
